@@ -1,0 +1,130 @@
+<?php
+/**
+ * This file is part of Year of Prayer Service.
+ *
+ * Year of Prayer Service is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Year of Prayer Service is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Missional Digerati <info@missionaldigerati.org>
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ */
+namespace YearOfPrayer\ApiService;
+
+use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
+use GuzzleHttp\Client;
+
+class HttpService implements HttpServiceInterface
+{
+    /**
+     * The base URL for all requests
+     *
+     * @var string
+     * @access private
+     */
+    private $baseUrl = '';
+
+    /**
+     * The Http client
+     *
+     * @var GuzzleHttp\Client
+     */
+    private $httpClient;
+
+    /**
+     * Construct the class
+     *
+     * @access public
+     */
+    public function __construct($baseUrl = '')
+    {
+        $this->httpClient = new Client();
+        $this->setBaseUrl($baseUrl);
+    }
+
+    /**
+     * Set the base URL for all requests
+     *
+     * @param  string   $url    The url for all requests
+     * @access public
+     */
+    public function setBaseUrl($url)
+    {
+        $this->baseUrl = $url;
+    }
+
+    /**
+     * Make a GET request to the given URL
+     * @param  string   $url    The URL to add to Query String
+     * @param  array    $data   An array of data to send
+     * @return array            The JSON response decoded
+     * @throws \Exception       If the status is not 200 or 201
+     * @access public
+     */
+    public function get($url, $data)
+    {
+        $requestUrl = $this->baseUrl . $url;
+        return $this->makeRequest('GET', $requestUrl, $data);
+    }
+
+    /**
+     * Make a POST request to the given URL
+     * @param  string   $url    The URL to post to
+     * @param  array    $data   An array of data to send
+     * @return array            The JSON response decoded
+     * @throws \Exception       If the status is not 200 or 201
+     * @access public
+     */
+    public function post($url, $data)
+    {
+        $requestUrl = $this->baseUrl . $url;
+        return $this->makeRequest('POST', $requestUrl, $data);
+    }
+
+    /**
+     * Make a PUT request to the given URL
+     * @param  string   $url    The URL to post to
+     * @param  array    $data   An array of data to send
+     * @return array            The JSON response decoded
+     * @throws \Exception       If the status is not 200 or 201
+     * @access public
+     */
+    public function put($url, $data)
+    {
+        $requestUrl = $this->baseUrl . $url;
+        return $this->makeRequest('PUT', $requestUrl, $data);
+    }
+
+    /**
+     * Make the request
+     *
+     * @param  string   $method     The http method
+     * @param  string   $url        The location of the resource
+     * @param  array    $data       The data to pass to the resource
+     * @return array                An array of the response
+     * @throws \Exception       If the status is not 200 or 201
+     * @access private
+     */
+    private function makeRequest($method, $url, $data)
+    {
+        $response = $this->httpClient->request($method, $url, $data);
+        $status = $response->getStatusCode();
+        if (in_array($status, [200, 201])) {
+            return json_decode($response->getBody()->getContents(), true);
+        } else {
+            throw new \Exception(
+                'Unable to reach the ' . $url . '.  Received a status code of ' . $status . '.'
+            );
+        }
+    }
+}
