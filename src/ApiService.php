@@ -64,6 +64,8 @@ class ApiService implements ApiServiceInterface
      * @param  string $clientId Your client id
      * @param  array  $data     The consumers data
      * @return string           The new consumer's API key
+     *
+     * @throws \InvalidArgumentException if the client id is not set
      * @access public
      */
     public function registerConsumer($clientId, $data)
@@ -84,10 +86,10 @@ class ApiService implements ApiServiceInterface
      * @param  string   $apiKey     The API Key of the Consumer
      * @param  array    $data       The consumers data
      * @return boolean              Was it successful?
-     * @access public
      *
      * @throws InvalidArgumentException If you do not provide a valid API key
      * @throws InvalidArgumentException If you do not pass data to update.
+     * @access public
      */
     public function updateConsumer($apiKey, $data)
     {
@@ -106,6 +108,9 @@ class ApiService implements ApiServiceInterface
      * @param  string   $apiKey     The API Key of the Consumer
      * @param  string   $prayerId   The unique id for the Prayer
      * @return boolean              Did it register the prayer?
+     *
+     * @throws InvalidArgumentException If you do not provide a valid API key.
+     * @throws InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
     public function praying($apiKey, $prayerId)
@@ -122,20 +127,27 @@ class ApiService implements ApiServiceInterface
 
     /**
      * Get the stats for the prayer
-     * @param  string   $apiKey     The API Key of the Consumer
-     * @param  string   $prayerId   The unique id for the Prayer
-     * @return array                The prayer stats from the API
+     * @param  string   $authorizeKey   The API Key of the Consumer or the application id for the client.
+     * @param  string   $keyType        The type of auth key sent (consumer|client).
+     * @param  string   $prayerId       The unique id for the Prayer
+     * @return array                    The prayer stats from the API
+     *
+     * @throws InvalidArgumentException If you do not provide a valid authorization key.
+     * @throws InvalidArgumentException If you do not provide a valid authorization key type.
+     * @throws InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
-    public function prayerStats($apiKey, $prayerId)
+    public function prayerStats($authorizeKey, $keyType, $prayerId)
     {
         $data = ['id'   =>  $prayerId];
-        if (empty($apiKey)) {
-            throw new \InvalidArgumentException('The apiKey you provided is invalid.');
+        if (empty($authorizeKey)) {
+            throw new \InvalidArgumentException('The authorizeKey you provided is invalid.');
+        } elseif (!in_array($keyType, ['consumer', 'client'])) {
+            throw new \InvalidArgumentException('The keyType you provided is invalid.');
         } elseif (!$this->prayerService->validate($data)) {
             throw new \InvalidArgumentException('The prayerId you provided is invalid.');
         } else {
-            return $this->prayerService->prayerStats($apiKey, $data);
+            return $this->prayerService->prayerStats($authorizeKey, $keyType, $data);
         }
     }
 }

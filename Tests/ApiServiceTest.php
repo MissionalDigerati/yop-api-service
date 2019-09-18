@@ -218,7 +218,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsShouldReturnValidStats()
+    public function testPrayerStatsAsConsumerShouldReturnValidStats()
     {
         $prayerId = '02-29';
         $apiKey = 'FunnyKeySee';
@@ -237,10 +237,10 @@ class ApiServiceTest extends TestCase
 
         $this->prayerService->expects($this->once())
                                 ->method('prayerStats')
-                                ->with($apiKey, $prayingData)
+                                ->with($apiKey, 'consumer', $prayingData)
                                 ->will($this->returnValue($expected));
 
-        $actual = $this->apiService->prayerStats($apiKey, $prayerId);
+        $actual = $this->apiService->prayerStats($apiKey, 'consumer', '02-29');
         $this->assertEquals($expected, $actual);
     }
 
@@ -254,6 +254,8 @@ class ApiServiceTest extends TestCase
      */
     public function testPrayingShouldThrowErrorIfApiKeyIsEmpty()
     {
+        $this->prayerService->expects($this->never())
+                                ->method('validate');
         $this->apiService->praying('', '12-02');
     }
 
@@ -267,6 +269,10 @@ class ApiServiceTest extends TestCase
      */
     public function testPrayingShouldThrowErrorIfPrayerIdIsEmpty()
     {
+        $this->prayerService->expects($this->once())
+                                ->method('validate')
+                                ->with(['id'    =>  ''])
+                                ->will($this->returnValue(false));
         $this->apiService->praying('myApiKey', '');
     }
 
@@ -280,6 +286,10 @@ class ApiServiceTest extends TestCase
      */
     public function testPrayingShouldThrowErrorIfPrayerIdIsMalformed()
     {
+        $this->prayerService->expects($this->once())
+                                ->method('validate')
+                                ->with(['id'    =>  '2103-2'])
+                                ->will($this->returnValue(false));
         $this->apiService->praying('myApiKey', '2103-2');
     }
 
@@ -293,7 +303,39 @@ class ApiServiceTest extends TestCase
      */
     public function testPrayerStatsShouldThrowErrorIfApiKeyIsEmpty()
     {
-        $this->apiService->prayerStats('', '12-02');
+        $this->prayerService->expects($this->never())
+                                ->method('validate');
+        $this->apiService->prayerStats('', 'client', '12-02');
+    }
+
+    /**
+     * prayerStats() should throw an error if the keyType is empty
+     *
+     * @return void
+     * @expectedException InvalidArgumentException
+     *
+     * @access public
+     */
+    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsEmpty()
+    {
+        $this->prayerService->expects($this->never())
+                                ->method('validate');
+        $this->apiService->prayerStats('myspecialKEY', '', '12-02');
+    }
+
+    /**
+     * prayerStats() should throw an error if the keyType is empty
+     *
+     * @return void
+     * @expectedException InvalidArgumentException
+     *
+     * @access public
+     */
+    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsWrong()
+    {
+        $this->prayerService->expects($this->never())
+                                ->method('validate');
+        $this->apiService->prayerStats('myspecialKEY', 'guest', '12-02');
     }
 
     /**
@@ -306,7 +348,11 @@ class ApiServiceTest extends TestCase
      */
     public function testPrayerStatsShouldThrowErrorIfPrayerIdIsEmpty()
     {
-        $this->apiService->prayerStats('myApiKey', '');
+        $this->prayerService->expects($this->once())
+                                ->method('validate')
+                                ->with(['id'    =>  ''])
+                                ->will($this->returnValue(false));
+        $this->apiService->prayerStats('myApiKey', 'consumer', '');
     }
 
     /**
@@ -319,6 +365,10 @@ class ApiServiceTest extends TestCase
      */
     public function testPrayerStatsShouldThrowErrorIfPrayerIdIsMalformed()
     {
-        $this->apiService->prayerStats('myApiKey', '03-243');
+        $this->prayerService->expects($this->once())
+                                ->method('validate')
+                                ->with(['id'    =>  '03-243'])
+                                ->will($this->returnValue(false));
+        $this->apiService->prayerStats('myApiKey', 'consumer', '03-243');
     }
 }

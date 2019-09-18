@@ -165,15 +165,14 @@ class PrayerServiceTest extends TestCase
     }
 
     /**
-     * prayerStats() should return data, if the status is 200
+     * prayerStats() should return data, as a consumer, if the status is 200
      *
      * @return void
      * @access public
      */
-    public function testPrayerStatsShouldReturnDataIfItIsASuccess()
+    public function testPrayerStatsAsConsumerShouldReturnDataIfItIsASuccess()
     {
         $apiKey = 'MonKeyTree';
-        $data = ['id'   =>  '12-28'];
         $expected = [
             'prayer_request_id'     =>  '12-28',
             'total_prayers'         =>  3,
@@ -189,11 +188,59 @@ class PrayerServiceTest extends TestCase
                 'data'      =>  $expected
             ]
         ];
+        $sendData = [
+            'headers'   =>    [
+                'yop-api-key' =>  $apiKey
+            ]
+        ];
         $this->httpService->expects($this->once())
                             ->method('get')
+                            ->with(
+                                $this->equalTo('/prayers/12-28'),
+                                $this->equalTo($sendData)
+                            )
                             ->will($this->returnValue($responseReturnData));
 
-        $actual = $this->prayerService->prayerStats($apiKey, $data);
+        $actual = $this->prayerService->prayerStats($apiKey, 'consumer', ['id'  =>  '12-28']);
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * prayerStats() should return data, as a client, if the status is 200
+     *
+     * @return void
+     * @access public
+     */
+    public function testPrayerStatsAsClientShouldReturnDataIfItIsASuccess()
+    {
+        $clientId = 'my-client-id';
+        $expected = [
+            'prayer_request_id'     =>  '11-10',
+            'total_prayers'         =>  3
+        ];
+
+        $responseReturnData = [
+            'status'    =>  'success',
+            'error'     =>  [],
+            'success'   =>  [
+                'message'   =>  'Thank You! Attached is the data for the prayer request.',
+                'data'      =>  $expected
+            ]
+        ];
+        $sendData = [
+            'headers'   =>    [
+                'yop-client-application-id' =>  $clientId
+            ]
+        ];
+        $this->httpService->expects($this->once())
+                            ->method('get')
+                            ->with(
+                                $this->equalTo('/prayers/11-10'),
+                                $this->equalTo($sendData)
+                            )
+                            ->will($this->returnValue($responseReturnData));
+
+        $actual = $this->prayerService->prayerStats($clientId, 'client', ['id'  =>  '11-10']);
         $this->assertEquals($expected, $actual);
     }
 
@@ -206,11 +253,10 @@ class PrayerServiceTest extends TestCase
     public function testPrayerStatsShouldThrowAnErrorIfStatusIsNot200()
     {
         $apiKey = 'FritosPintos';
-        $data = ['id'   =>  '10-21'];
         $this->httpService->expects($this->once())
                             ->method('get')
                             ->will($this->throwException(new \Exception));
 
-        $this->prayerService->prayerStats($apiKey, $data);
+        $this->prayerService->prayerStats($apiKey, 'consumer', ['id'    =>  '10-21']);
     }
 }

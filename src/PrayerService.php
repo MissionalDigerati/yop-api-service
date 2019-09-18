@@ -67,18 +67,27 @@ class PrayerService
     /**
      * Get the stats for the prayer
      *
-     * @param  string   $apiKey     The Consumer's apiKey
-     * @param  array    $data       The data containing the prayerId
-     * @return array                An array of prayer stats
+     * @param  string   $authorizeKey   The API Key of the Consumer or the application id for the client.
+     * @param  string   $keyType        The type of auth key sent (consumer|client).
+     * @param  string   $data           The data containing the prayerId
+     * @return array                    An array of prayer stats
      * @access public
      */
-    public function prayerStats($apiKey, $data)
+    public function prayerStats($authorizeKey, $keyType, $data)
     {
-        $sendData = [
-            'headers'   =>    [
-                'yop-api-key' =>  $apiKey
-            ]
-        ];
+        if ($keyType === 'client') {
+            $sendData = [
+                'headers'   =>    [
+                    'yop-client-application-id' =>  $authorizeKey
+                ]
+            ];
+        } elseif ($keyType === 'consumer') {
+            $sendData = [
+                'headers'   =>    [
+                    'yop-api-key' =>  $authorizeKey
+                ]
+            ];
+        }
         $response = $this->httpService->get('/prayers/' . $data['id'], $sendData);
         return $response['success']['data'];
     }
