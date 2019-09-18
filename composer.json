@@ -5,7 +5,8 @@
     "license": "GPL",
     "scripts": {
       "lint": "phpcs --standard=PSR12 src/",
-      "test": "phpunit ./Tests/"
+      "test": "phpunit ./Tests/",
+      "qa": ["@test", "@lint"]
     },
     "authors": [
         {
