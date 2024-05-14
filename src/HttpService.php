@@ -117,6 +117,13 @@ class HttpService implements HttpServiceInterface
      */
     private function makeRequest($method, $url, $data)
     {
+        /**
+         * Add a user agent header to stop 406 responses
+         * @link https://stackoverflow.com/a/37984220
+         */
+        $data['headers'] = [
+            'User-Agent' => 'Mozilla/5.0'
+        ];
         $response = $this->httpClient->request($method, $url, $data);
         $status = $response->getStatusCode();
         if (in_array($status, [200, 201])) {
