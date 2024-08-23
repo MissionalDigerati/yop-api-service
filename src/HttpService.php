@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Year of Prayer Service.
  *
@@ -19,6 +20,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+
 namespace YearOfPrayer\ApiService;
 
 use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
@@ -37,7 +39,7 @@ class HttpService implements HttpServiceInterface
     /**
      * The Http client
      *
-     * @var GuzzleHttp\Client
+     * @var Client
      */
     private $httpClient;
 

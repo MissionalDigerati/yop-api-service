@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Year of Prayer Service.
  *
@@ -19,6 +20,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+
 namespace YearOfPrayer\ApiService;
 
 use YearOfPrayer\ApiService\Contracts\ApiServiceInterface;
@@ -87,8 +89,8 @@ class ApiService implements ApiServiceInterface
      * @param  array    $data       The consumers data
      * @return boolean              Was it successful?
      *
-     * @throws InvalidArgumentException If you do not provide a valid API key
-     * @throws InvalidArgumentException If you do not pass data to update.
+     * @throws \InvalidArgumentException If you do not provide a valid API key
+     * @throws \InvalidArgumentException If you do not pass data to update.
      * @access public
      */
     public function updateConsumer($apiKey, $data)
@@ -109,8 +111,8 @@ class ApiService implements ApiServiceInterface
      * @param  string   $prayerId   The unique id for the Prayer
      * @return boolean              Did it register the prayer?
      *
-     * @throws InvalidArgumentException If you do not provide a valid API key.
-     * @throws InvalidArgumentException If you do not provide a valid prayerId.
+     * @throws \InvalidArgumentException If you do not provide a valid API key.
+     * @throws \InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
     public function praying($apiKey, $prayerId)
@@ -132,9 +134,9 @@ class ApiService implements ApiServiceInterface
      * @param  string   $prayerId       The unique id for the Prayer
      * @return array                    The prayer stats from the API
      *
-     * @throws InvalidArgumentException If you do not provide a valid authorization key.
-     * @throws InvalidArgumentException If you do not provide a valid authorization key type.
-     * @throws InvalidArgumentException If you do not provide a valid prayerId.
+     * @throws \InvalidArgumentException If you do not provide a valid authorization key.
+     * @throws \InvalidArgumentException If you do not provide a valid authorization key type.
+     * @throws \InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
     public function prayerStats($authorizeKey, $keyType, $prayerId)

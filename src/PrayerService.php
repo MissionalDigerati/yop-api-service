@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Year of Prayer Service.
  *
@@ -19,6 +20,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+
 namespace YearOfPrayer\ApiService;
 
 use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
@@ -69,7 +71,7 @@ class PrayerService
      *
      * @param  string   $authorizeKey   The API Key of the Consumer or the application id for the client.
      * @param  string   $keyType        The type of auth key sent (consumer|client).
-     * @param  string   $data           The data containing the prayerId
+     * @param  string[] $data           The data containing the prayerId
      * @return array                    An array of prayer stats
      * @access public
      */

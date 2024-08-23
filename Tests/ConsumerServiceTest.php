@@ -73,7 +73,7 @@ class ConsumerServiceTest extends TestCase
         $this->httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
-                                ->setMethods(array('post', 'get', 'put', 'setBaseUrl'))
+                                ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
                                 ->getMock();
         $this->consumerService->setHttpService($this->httpService);
     }
@@ -124,7 +124,7 @@ class ConsumerServiceTest extends TestCase
 
         $this->httpService->expects($this->once())
                             ->method('post')
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $consumer = $this->consumerService->register('myClientId', $this->consumerFactory);
         $this->assertEquals($data, $consumer);
@@ -134,11 +134,11 @@ class ConsumerServiceTest extends TestCase
      * register() should throw an error if the status is not 200
      *
      * @return void
-     * @expectedException Exception
      * @access public
      */
     public function testRegisterShouldThrowErrorIfStatusIsNot200()
     {
+        $this->expectException(\Exception::class);
         $this->httpService->expects($this->once())
                             ->method('post')
                             ->will($this->throwException(new \Exception));
@@ -169,7 +169,7 @@ class ConsumerServiceTest extends TestCase
 
         $this->httpService->expects($this->once())
                             ->method('put')
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $success = $this->consumerService->update($apiKey, ['push_at'   =>  '21:00:00']);
         $this->assertTrue($success);
@@ -195,7 +195,7 @@ class ConsumerServiceTest extends TestCase
 
         $this->httpService->expects($this->once())
                             ->method('put')
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $success = $this->consumerService->update($apiKey, ['push_at'   =>  '21:00:00']);
         $this->assertFalse($success);

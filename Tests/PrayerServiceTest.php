@@ -54,7 +54,7 @@ class PrayerServiceTest extends TestCase
         $this->httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
-                                ->setMethods(array('post', 'get', 'put', 'setBaseUrl'))
+                                ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
                                 ->getMock();
         $this->prayerService->setHttpService($this->httpService);
     }
@@ -140,7 +140,7 @@ class PrayerServiceTest extends TestCase
 
         $this->httpService->expects($this->once())
                             ->method('post')
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
 
         $this->assertTrue($this->prayerService->praying($apiKey, $data));
@@ -150,11 +150,11 @@ class PrayerServiceTest extends TestCase
      * praying() should throw an error if the status is not 200
      *
      * @return void
-     * @expectedException Exception
      * @access public
      */
     public function testPrayingShouldThrowErrorIfStatusIsNot200()
     {
+        $this->expectException(\Exception::class);
         $apiKey = 'JHG$32331';
         $data = ['id'   =>  '11-15'];
         $this->httpService->expects($this->once())
@@ -199,7 +199,7 @@ class PrayerServiceTest extends TestCase
                                 $this->equalTo('/prayers/12-28'),
                                 $this->equalTo($sendData)
                             )
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $actual = $this->prayerService->prayerStats($apiKey, 'consumer', ['id'  =>  '12-28']);
         $this->assertEquals($expected, $actual);
@@ -238,7 +238,7 @@ class PrayerServiceTest extends TestCase
                                 $this->equalTo('/prayers/11-10'),
                                 $this->equalTo($sendData)
                             )
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $actual = $this->prayerService->prayerStats($clientId, 'client', ['id'  =>  '11-10']);
         $this->assertEquals($expected, $actual);
@@ -247,11 +247,11 @@ class PrayerServiceTest extends TestCase
     /**
      * prayerStats() should throw an error if the status is not 200
      * @return void
-     * @expectedException Exception
      * @access public
      */
     public function testPrayerStatsShouldThrowAnErrorIfStatusIsNot200()
     {
+        $this->expectException(\Exception::class);
         $apiKey = 'FritosPintos';
         $this->httpService->expects($this->once())
                             ->method('get')
