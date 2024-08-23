@@ -93,7 +93,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testRegisterConsumerShouldRegisterANewConsumer()
+    public function testRegisterConsumerShouldRegisterANewConsumer(): void
     {
         $data = $this->consumerFactory;
         $expectedApiKey = 'frogger123@';
@@ -121,7 +121,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testRegisterConsumerShouldThrowAnErrorIfTheDataIsInvalid()
+    public function testRegisterConsumerShouldThrowAnErrorIfTheDataIsInvalid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->consumerService->expects($this->once())
@@ -137,7 +137,7 @@ class ApiServiceTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateConsumerShouldUpdateTheConsumerData()
+    public function testUpdateConsumerShouldUpdateTheConsumerData(): void
     {
         $apiKey = 'Y654$3#rre';
         $this->consumerService->expects($this->once())
@@ -155,7 +155,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testUpdateConsumerShouldThrowAnErrorIfAPIKeyIsEmpty()
+    public function testUpdateConsumerShouldThrowAnErrorIfAPIKeyIsEmpty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->apiService->updateConsumer('', ['device_model'   =>  'iOS']);
@@ -167,7 +167,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testUpdateConsumerShouldThrowAnErrorIfEmptyData()
+    public function testUpdateConsumerShouldThrowAnErrorIfEmptyData(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->apiService->updateConsumer('myApiKey23', []);
@@ -179,7 +179,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testUpdateConsumerShouldThrowAnErrorIfInvalidData()
+    public function testUpdateConsumerShouldThrowAnErrorIfInvalidData(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->apiService->updateConsumer('myApiKey23', ['api_key'  =>  'nyNewApiKey']);
@@ -192,7 +192,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayingShouldIndicateAPrayer()
+    public function testPrayingShouldIndicateAPrayer(): void
     {
         $prayerId = '01-11';
         $apiKey = 'myApiKey23';
@@ -217,7 +217,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsAsConsumerShouldReturnValidStats()
+    public function testPrayerStatsAsConsumerShouldReturnValidStats(): void
     {
         $prayerId = '02-29';
         $apiKey = 'FunnyKeySee';
@@ -250,7 +250,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfApiKeyIsEmpty()
+    public function testPrayingShouldThrowErrorIfApiKeyIsEmpty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
@@ -265,7 +265,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfPrayerIdIsEmpty()
+    public function testPrayingShouldThrowErrorIfPrayerIdIsEmpty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
@@ -282,7 +282,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfPrayerIdIsMalformed()
+    public function testPrayingShouldThrowErrorIfPrayerIdIsMalformed(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
@@ -299,7 +299,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfApiKeyIsEmpty()
+    public function testPrayerStatsShouldThrowErrorIfApiKeyIsEmpty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
@@ -314,7 +314,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsEmpty()
+    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsEmpty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
@@ -329,7 +329,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsWrong()
+    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsWrong(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
@@ -344,7 +344,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsEmpty()
+    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsEmpty(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
@@ -361,7 +361,7 @@ class ApiServiceTest extends TestCase
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsMalformed()
+    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsMalformed(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())

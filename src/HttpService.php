@@ -60,7 +60,7 @@ class HttpService implements HttpServiceInterface
      * @param  string   $url    The url for all requests
      * @access public
      */
-    public function setBaseUrl($url)
+    public function setBaseUrl(string $url)
     {
         $this->baseUrl = $url;
     }
@@ -73,9 +73,9 @@ class HttpService implements HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access public
      */
-    public function get($url, $data)
+    public function get(string $url, array $data): array
     {
-        $requestUrl = $this->baseUrl . $url;
+        $requestUrl = "{$this->baseUrl}{$url}";
         return $this->makeRequest('GET', $requestUrl, $data);
     }
 
@@ -87,9 +87,9 @@ class HttpService implements HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access public
      */
-    public function post($url, $data)
+    public function post(string $url, array $data): array
     {
-        $requestUrl = $this->baseUrl . $url;
+        $requestUrl = "{$this->baseUrl}{$url}";
         return $this->makeRequest('POST', $requestUrl, $data);
     }
 
@@ -101,9 +101,9 @@ class HttpService implements HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access public
      */
-    public function put($url, $data)
+    public function put(string $url, array $data): array
     {
-        $requestUrl = $this->baseUrl . $url;
+        $requestUrl = "{$this->baseUrl}{$url}";
         return $this->makeRequest('PUT', $requestUrl, $data);
     }
 
@@ -117,7 +117,7 @@ class HttpService implements HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access private
      */
-    private function makeRequest($method, $url, $data)
+    private function makeRequest(string $method, string $url, array $data): array
     {
         /**
          * Add a user agent header to stop 406 responses
@@ -133,7 +133,7 @@ class HttpService implements HttpServiceInterface
             return json_decode($response->getBody()->getContents(), true);
         } else {
             throw new \Exception(
-                'Unable to reach the ' . $url . '.  Received a status code of ' . $status . '.'
+                "Unable to reach the {$url}. Received a status code of {$status}."
             );
         }
     }

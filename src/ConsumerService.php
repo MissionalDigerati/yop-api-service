@@ -53,7 +53,7 @@ class ConsumerService
      * @return boolean          Is it valid?
      * @access public
      */
-    public function validate($data)
+    public function validate(array $data): bool
     {
         $valid = true;
         if ((!isset($data['device_uuid'])) || ($data['device_uuid'] == '')) {
@@ -67,10 +67,10 @@ class ConsumerService
      *
      * @param   string  $clientId   The id for the Client of the API
      * @param   array    $data      The Consumer data
-     * @return  string              The Consumer's new API key
+     * @return  array               The Consumer's new data
      * @access  public
      */
-    public function register($clientId, $data)
+    public function register(string $clientId, array $data): array
     {
         $sendData = [
             'headers'   =>    [
@@ -90,7 +90,7 @@ class ConsumerService
      * @return boolean          Was it successful?
      * @access public
      */
-    public function update($apiKey, $data)
+    public function update(string $apiKey, array $data): bool
     {
         $sendData = [
             'headers'   =>    [

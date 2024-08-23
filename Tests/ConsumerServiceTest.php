@@ -22,8 +22,8 @@
 namespace YearOfPrayer\ApiService\Tests;
 
 use YearOfPrayer\ApiService\ConsumerService;
-use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
 use PHPUnit\Framework\TestCase;
+use GuzzleHttp\Client;
 
 class ConsumerServiceTest extends TestCase
 {
@@ -39,7 +39,7 @@ class ConsumerServiceTest extends TestCase
     /**
      * The Guzzle HTTP Client Object
      *
-     * @var GuzzleHttp\Client
+     * @var Client
      */
     private $httpService;
 
@@ -84,7 +84,7 @@ class ConsumerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldRequireADeviceUUID()
+    public function testValidateShouldRequireADeviceUUID(): void
     {
         $data = $this->consumerFactory;
         $data['device_uuid'] = '';
@@ -97,7 +97,7 @@ class ConsumerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldPassIfAllRequiredAreSet()
+    public function testValidateShouldPassIfAllRequiredAreSet(): void
     {
         $data = $this->consumerFactory;
         $this->assertTrue($this->consumerService->validate($data));
@@ -109,7 +109,7 @@ class ConsumerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testRegisterShouldRegisterANewConsumer()
+    public function testRegisterShouldRegisterANewConsumer(): void
     {
         $data = $this->consumerFactory;
         $data['api_key'] = 'AWizardOfAKey123';
@@ -136,7 +136,7 @@ class ConsumerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testRegisterShouldThrowErrorIfStatusIsNot200()
+    public function testRegisterShouldThrowErrorIfStatusIsNot200(): void
     {
         $this->expectException(\Exception::class);
         $this->httpService->expects($this->once())
@@ -152,7 +152,7 @@ class ConsumerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testUpdateShouldUpdateTheConsumer()
+    public function testUpdateShouldUpdateTheConsumer(): void
     {
         $apiKey = 'myUniqueKey123';
         $data = $this->consumerFactory;
@@ -181,7 +181,7 @@ class ConsumerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testUpdateShouldReturnFalseIfNotSuccessful()
+    public function testUpdateShouldReturnFalseIfNotSuccessful(): void
     {
         $apiKey = 'myNewUniqueKey789';
         $responseReturnData = [

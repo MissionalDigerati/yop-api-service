@@ -55,15 +55,15 @@ class PrayerService
      * @return boolean              Was it successful
      * @access public
      */
-    public function praying($apiKey, $data)
+    public function praying(string $apiKey, array $data): bool
     {
         $sendData = [
             'headers'   =>    [
                 'yop-api-key' =>  $apiKey
             ]
         ];
-        $response = $this->httpService->post('/prayers/' . $data['id'] . '/praying', $sendData);
-        return ($response['status'] === 'success');
+        $response = $this->httpService->post("/prayers/{$data['id']}/praying", $sendData);
+        return $response['status'] === 'success';
     }
 
     /**
@@ -75,7 +75,7 @@ class PrayerService
      * @return array                    An array of prayer stats
      * @access public
      */
-    public function prayerStats($authorizeKey, $keyType, $data)
+    public function prayerStats(string $authorizeKey, string $keyType, array $data): array
     {
         if ($keyType === 'client') {
             $sendData = [
@@ -90,7 +90,7 @@ class PrayerService
                 ]
             ];
         }
-        $response = $this->httpService->get('/prayers/' . $data['id'], $sendData);
+        $response = $this->httpService->get("/prayers/{$data['id']}", $sendData);
         return $response['success']['data'];
     }
 
@@ -101,7 +101,7 @@ class PrayerService
      * @return boolean          Is it valid
      * @access public
      */
-    public function validate($data)
+    public function validate(array $data): bool
     {
         $valid = true;
         $regex = '/^[0-9]{2}-[0-9]{2}$/';
@@ -126,9 +126,9 @@ class PrayerService
      * @return boolean          Is it valid?
      * @access private
      */
-    private function validMonth($month)
+    private function validMonth(int $month): bool
     {
-        return ($month <= 12);
+        return $month <= 12;
     }
 
     /**
@@ -139,7 +139,7 @@ class PrayerService
      * @return boolean          Is it valid?
      * @access private
      */
-    private function validDay($month, $day)
+    private function validDay(int $month, int $day): bool
     {
         $totalDays = 31;
         if (in_array($month, [4, 6, 9, 11])) {
@@ -147,6 +147,6 @@ class PrayerService
         } elseif ($month === 2) {
             $totalDays = 29;
         }
-        return ($day <= $totalDays);
+        return $day <= $totalDays;
     }
 }

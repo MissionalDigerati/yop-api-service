@@ -70,7 +70,7 @@ class ApiService implements ApiServiceInterface
      * @throws \InvalidArgumentException if the client id is not set
      * @access public
      */
-    public function registerConsumer($clientId, $data)
+    public function registerConsumer(string $clientId, array $data): string
     {
         if ((!$clientId) || ($clientId == '')) {
             throw new \InvalidArgumentException('You are missing the Year of Prayer Client ID.');
@@ -93,7 +93,7 @@ class ApiService implements ApiServiceInterface
      * @throws \InvalidArgumentException If you do not pass data to update.
      * @access public
      */
-    public function updateConsumer($apiKey, $data)
+    public function updateConsumer(string $apiKey, array $data): bool
     {
         if ($apiKey == '') {
             throw new \InvalidArgumentException('You need to provide a vaild API key.');
@@ -115,7 +115,7 @@ class ApiService implements ApiServiceInterface
      * @throws \InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
-    public function praying($apiKey, $prayerId)
+    public function praying(string $apiKey, string $prayerId): bool
     {
         $data = ['id'   =>  $prayerId];
         if (empty($apiKey)) {
@@ -139,7 +139,7 @@ class ApiService implements ApiServiceInterface
      * @throws \InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
-    public function prayerStats($authorizeKey, $keyType, $prayerId)
+    public function prayerStats(string $authorizeKey, string $keyType, string $prayerId): array
     {
         $data = ['id'   =>  $prayerId];
         if (empty($authorizeKey)) {

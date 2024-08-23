@@ -39,7 +39,7 @@ class PrayerServiceTest extends TestCase
     /**
      * The Guzzle HTTP Client Object
      *
-     * @var YearOfPrayer\ApiService\Contracts\HttpServiceInterface
+     * @var HttpServiceInterface
      */
     private $httpService;
 
@@ -65,7 +65,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnTrueIfValidPrayerId()
+    public function testValidateShouldReturnTrueIfValidPrayerId(): void
     {
         $data = ['id'   =>  '10-21'];
         $this->assertTrue($this->prayerService->validate($data));
@@ -77,7 +77,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalsePrayerIdIsEmpty()
+    public function testValidateShouldReturnFalsePrayerIdIsEmpty(): void
     {
         $data = ['id'   =>  ''];
         $this->assertFalse($this->prayerService->validate($data));
@@ -89,7 +89,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalseIfPrayerIdIsMalformed()
+    public function testValidateShouldReturnFalseIfPrayerIdIsMalformed(): void
     {
         $data = ['id'   =>  '10322-211'];
         $this->assertFalse($this->prayerService->validate($data));
@@ -101,7 +101,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalseIfPrayerMonthIsOutOfRange()
+    public function testValidateShouldReturnFalseIfPrayerMonthIsOutOfRange(): void
     {
         $data = ['id'   =>  '13-11'];
         $this->assertFalse($this->prayerService->validate($data));
@@ -113,7 +113,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalseIfPrayerDayIsOutOfRange()
+    public function testValidateShouldReturnFalseIfPrayerDayIsOutOfRange(): void
     {
         $data = ['id'   =>  '12-33'];
         $this->assertFalse($this->prayerService->validate($data));
@@ -125,7 +125,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayingShouldReturnTrueIfItIsASuccess()
+    public function testPrayingShouldReturnTrueIfItIsASuccess(): void
     {
         $apiKey = '123456';
         $data = ['id'   =>  '10-10'];
@@ -152,7 +152,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfStatusIsNot200()
+    public function testPrayingShouldThrowErrorIfStatusIsNot200(): void
     {
         $this->expectException(\Exception::class);
         $apiKey = 'JHG$32331';
@@ -170,7 +170,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsAsConsumerShouldReturnDataIfItIsASuccess()
+    public function testPrayerStatsAsConsumerShouldReturnDataIfItIsASuccess(): void
     {
         $apiKey = 'MonKeyTree';
         $expected = [
@@ -211,7 +211,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsAsClientShouldReturnDataIfItIsASuccess()
+    public function testPrayerStatsAsClientShouldReturnDataIfItIsASuccess(): void
     {
         $clientId = 'my-client-id';
         $expected = [
@@ -249,7 +249,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsShouldThrowAnErrorIfStatusIsNot200()
+    public function testPrayerStatsShouldThrowAnErrorIfStatusIsNot200(): void
     {
         $this->expectException(\Exception::class);
         $apiKey = 'FritosPintos';
