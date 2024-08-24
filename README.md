@@ -19,7 +19,8 @@ use YearOfPrayer\ApiService\ConsumerService;
 use YearOfPrayer\ApiService\HttpService;
 use YearOfPrayer\ApiService\PrayerService;
 
-$apiService = new ApiService(new HttpService('YOUR API URL'), new ConsumerService(), new PrayerService());
+$httpService = new HttpService('YOUR API URL');
+$apiService = new ApiService(new ConsumerService($httpService), new PrayerService($httpService));
 ```
 
 ## Development

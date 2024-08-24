@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Year of Prayer Service.
  *
@@ -19,6 +20,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+
 namespace YearOfPrayer\ApiService\Contracts;
 
 interface HttpServiceInterface
@@ -31,7 +33,7 @@ interface HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access public
      */
-    public function get($url, $data);
+    public function get(string $url, array $data): array;
     /**
      * Make a POST request to the given URL
      * @param  string   $url    The URL to post to
@@ -40,7 +42,7 @@ interface HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access public
      */
-    public function post($url, $data);
+    public function post(string $url, array $data): array;
     /**
      * Make a PUT request to the given URL
      * @param  string   $url    The URL to post to
@@ -49,12 +51,12 @@ interface HttpServiceInterface
      * @throws \Exception       If the status is not 200 or 201
      * @access public
      */
-    public function put($url, $data);
+    public function put(string $url, array $data): array;
     /**
      * Set the base URL for all requests
      *
      * @param  string   $url    The url for all requests
      * @access public
      */
-    public function setBaseUrl($url);
+    public function setBaseUrl(string $url);
 }

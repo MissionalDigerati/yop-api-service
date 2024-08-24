@@ -39,7 +39,7 @@ class PrayerServiceTest extends TestCase
     /**
      * The Guzzle HTTP Client Object
      *
-     * @var YearOfPrayer\ApiService\Contracts\HttpServiceInterface
+     * @var HttpServiceInterface
      */
     private $httpService;
 
@@ -50,13 +50,12 @@ class PrayerServiceTest extends TestCase
      */
     public function setUp() : void
     {
-        $this->prayerService = new PrayerService();
         $this->httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
-                                ->setMethods(array('post', 'get', 'put', 'setBaseUrl'))
+                                ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
                                 ->getMock();
-        $this->prayerService->setHttpService($this->httpService);
+        $this->prayerService = new PrayerService($this->httpService);
     }
 
     /**
@@ -65,7 +64,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnTrueIfValidPrayerId()
+    public function testValidateShouldReturnTrueIfValidPrayerId(): void
     {
         $data = ['id'   =>  '10-21'];
         $this->assertTrue($this->prayerService->validate($data));
@@ -77,7 +76,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalsePrayerIdIsEmpty()
+    public function testValidateShouldReturnFalsePrayerIdIsEmpty(): void
     {
         $data = ['id'   =>  ''];
         $this->assertFalse($this->prayerService->validate($data));
@@ -89,7 +88,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalseIfPrayerIdIsMalformed()
+    public function testValidateShouldReturnFalseIfPrayerIdIsMalformed(): void
     {
         $data = ['id'   =>  '10322-211'];
         $this->assertFalse($this->prayerService->validate($data));
@@ -101,7 +100,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalseIfPrayerMonthIsOutOfRange()
+    public function testValidateShouldReturnFalseIfPrayerMonthIsOutOfRange(): void
     {
         $data = ['id'   =>  '13-11'];
         $this->assertFalse($this->prayerService->validate($data));
@@ -113,7 +112,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testValidateShouldReturnFalseIfPrayerDayIsOutOfRange()
+    public function testValidateShouldReturnFalseIfPrayerDayIsOutOfRange(): void
     {
         $data = ['id'   =>  '12-33'];
         $this->assertFalse($this->prayerService->validate($data));
@@ -125,7 +124,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayingShouldReturnTrueIfItIsASuccess()
+    public function testPrayingShouldReturnTrueIfItIsASuccess(): void
     {
         $apiKey = '123456';
         $data = ['id'   =>  '10-10'];
@@ -140,7 +139,7 @@ class PrayerServiceTest extends TestCase
 
         $this->httpService->expects($this->once())
                             ->method('post')
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
 
         $this->assertTrue($this->prayerService->praying($apiKey, $data));
@@ -150,11 +149,11 @@ class PrayerServiceTest extends TestCase
      * praying() should throw an error if the status is not 200
      *
      * @return void
-     * @expectedException Exception
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfStatusIsNot200()
+    public function testPrayingShouldThrowErrorIfStatusIsNot200(): void
     {
+        $this->expectException(\Exception::class);
         $apiKey = 'JHG$32331';
         $data = ['id'   =>  '11-15'];
         $this->httpService->expects($this->once())
@@ -170,7 +169,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsAsConsumerShouldReturnDataIfItIsASuccess()
+    public function testPrayerStatsAsConsumerShouldReturnDataIfItIsASuccess(): void
     {
         $apiKey = 'MonKeyTree';
         $expected = [
@@ -199,7 +198,7 @@ class PrayerServiceTest extends TestCase
                                 $this->equalTo('/prayers/12-28'),
                                 $this->equalTo($sendData)
                             )
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $actual = $this->prayerService->prayerStats($apiKey, 'consumer', ['id'  =>  '12-28']);
         $this->assertEquals($expected, $actual);
@@ -211,7 +210,7 @@ class PrayerServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsAsClientShouldReturnDataIfItIsASuccess()
+    public function testPrayerStatsAsClientShouldReturnDataIfItIsASuccess(): void
     {
         $clientId = 'my-client-id';
         $expected = [
@@ -238,7 +237,7 @@ class PrayerServiceTest extends TestCase
                                 $this->equalTo('/prayers/11-10'),
                                 $this->equalTo($sendData)
                             )
-                            ->will($this->returnValue($responseReturnData));
+                            ->willReturn($responseReturnData);
 
         $actual = $this->prayerService->prayerStats($clientId, 'client', ['id'  =>  '11-10']);
         $this->assertEquals($expected, $actual);
@@ -247,11 +246,11 @@ class PrayerServiceTest extends TestCase
     /**
      * prayerStats() should throw an error if the status is not 200
      * @return void
-     * @expectedException Exception
      * @access public
      */
-    public function testPrayerStatsShouldThrowAnErrorIfStatusIsNot200()
+    public function testPrayerStatsShouldThrowAnErrorIfStatusIsNot200(): void
     {
+        $this->expectException(\Exception::class);
         $apiKey = 'FritosPintos';
         $this->httpService->expects($this->once())
                             ->method('get')

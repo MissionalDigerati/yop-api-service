@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Year of Prayer Service.
  *
@@ -19,6 +20,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+
 namespace YearOfPrayer\ApiService\Contracts;
 
 interface ApiServiceInterface
@@ -33,29 +35,29 @@ interface ApiServiceInterface
      * @throws \InvalidArgumentException if the client id is not set
      * @access public
      */
-    public function registerConsumer($clientId, $data);
+    public function registerConsumer(string $clientId, array $data): string;
     /**
      * Update the Consumer
      * @param  string   $apiKey     The API Key of the Consumer
      * @param  array    $data       The consumers data
      * @return boolean              Was it successful?
      *
-     * @throws InvalidArgumentException If you do not provide a valid API key
-     * @throws InvalidArgumentException If you do not pass data to update.
+     * @throws \InvalidArgumentException If you do not provide a valid API key
+     * @throws \InvalidArgumentException If you do not pass data to update.
      * @access public
      */
-    public function updateConsumer($apiKey, $data);
+    public function updateConsumer(string $apiKey, array $data): bool;
     /**
      * Indicate a user is praying
      * @param  string   $apiKey     The API Key of the Consumer
      * @param  string   $prayerId   The unique id for the Prayer
      * @return boolean              Did it register the prayer?
      *
-     * @throws InvalidArgumentException If you do not provide a valid API key.
-     * @throws InvalidArgumentException If you do not provide a valid prayerId.
+     * @throws \InvalidArgumentException If you do not provide a valid API key.
+     * @throws \InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
-    public function praying($apiKey, $prayerId);
+    public function praying(string $apiKey, string $prayerId): bool;
     /**
      * Get the stats for the prayer
      * @param  string   $authorizeKey   The API Key of the Consumer or the application id for the client.
@@ -63,10 +65,10 @@ interface ApiServiceInterface
      * @param  string   $prayerId       The unique id for the Prayer
      * @return array                    The prayer stats from the API
      *
-     * @throws InvalidArgumentException If you do not provide a valid authorization key.
-     * @throws InvalidArgumentException If you do not provide a valid authorization key type.
-     * @throws InvalidArgumentException If you do not provide a valid prayerId.
+     * @throws \InvalidArgumentException If you do not provide a valid authorization key.
+     * @throws \InvalidArgumentException If you do not provide a valid authorization key type.
+     * @throws \InvalidArgumentException If you do not provide a valid prayerId.
      * @access public
      */
-    public function prayerStats($authorizeKey, $keyType, $prayerId);
+    public function prayerStats(string $authorizeKey, string $keyType, string $prayerId): array;
 }

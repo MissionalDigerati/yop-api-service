@@ -24,7 +24,6 @@ namespace YearOfPrayer\ApiService\Tests;
 use YearOfPrayer\ApiService\ApiService;
 use YearOfPrayer\ApiService\ConsumerService;
 use YearOfPrayer\ApiService\PrayerService;
-use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class ApiServiceTest extends TestCase
@@ -76,16 +75,18 @@ class ApiServiceTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->consumerService = $this->getMockBuilder('YearOfPrayer\ApiService\ConsumerService')
-                                ->getMock();
-        $this->prayerService = $this->getMockBuilder('YearOfPrayer\ApiService\PrayerService')
-                                                        ->getMock();
         $httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
-                                ->setMethods(array('post', 'get', 'put', 'setBaseUrl'))
-                                ->getMock();
-        $this->apiService = new ApiService($httpService, $this->consumerService, $this->prayerService);
+            ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
+            ->getMock();
+        $this->consumerService = $this->getMockBuilder('YearOfPrayer\ApiService\ConsumerService')
+            ->setConstructorArgs([$httpService])
+            ->getMock();
+        $this->prayerService = $this->getMockBuilder('YearOfPrayer\ApiService\PrayerService')
+            ->setConstructorArgs([$httpService])
+            ->getMock();
+        $this->apiService = new ApiService($this->consumerService, $this->prayerService);
     }
 
     /**
@@ -94,7 +95,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testRegisterConsumerShouldRegisterANewConsumer()
+    public function testRegisterConsumerShouldRegisterANewConsumer(): void
     {
         $data = $this->consumerFactory;
         $expectedApiKey = 'frogger123@';
@@ -103,12 +104,12 @@ class ApiServiceTest extends TestCase
         $this->consumerService->expects($this->once())
                                 ->method('validate')
                                 ->with($this->consumerFactory)
-                                ->will($this->returnValue(true));
+                                ->willReturn(true);
 
         $this->consumerService->expects($this->once())
                                 ->method('register')
                                 ->with('client-546', $this->consumerFactory)
-                                ->will($this->returnValue($data));
+                                ->willReturn($data);
 
 
         $apiKey = $this->apiService->registerConsumer('client-546', $this->consumerFactory);
@@ -120,15 +121,15 @@ class ApiServiceTest extends TestCase
      * registerConsumer should throw an error if the data is invalid
      *
      * @return void
-     * @expectedException InvalidArgumentException
      * @access public
      */
-    public function testRegisterConsumerShouldThrowAnErrorIfTheDataIsInvalid()
+    public function testRegisterConsumerShouldThrowAnErrorIfTheDataIsInvalid(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->consumerService->expects($this->once())
                                 ->method('validate')
                                 ->with($this->consumerFactory)
-                                ->will($this->returnValue(false));
+                                ->willReturn(false);
 
         $this->apiService->registerConsumer('test-client-54', $this->consumerFactory);
     }
@@ -138,13 +139,13 @@ class ApiServiceTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateConsumerShouldUpdateTheConsumerData()
+    public function testUpdateConsumerShouldUpdateTheConsumerData(): void
     {
         $apiKey = 'Y654$3#rre';
         $this->consumerService->expects($this->once())
                                 ->method('update')
                                 ->with($apiKey, ['push_at'  =>  '12:00:00'])
-                                ->will($this->returnValue(true));
+                                ->willReturn(true);
 
         $success = $this->apiService->updateConsumer($apiKey, ['push_at'   =>  '12:00:00']);
         $this->assertTrue($success);
@@ -154,11 +155,11 @@ class ApiServiceTest extends TestCase
      * updateConsumer should throw an error if the API key is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      * @access public
      */
-    public function testUpdateConsumerShouldThrowAnErrorIfAPIKeyIsEmpty()
+    public function testUpdateConsumerShouldThrowAnErrorIfAPIKeyIsEmpty(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->apiService->updateConsumer('', ['device_model'   =>  'iOS']);
     }
 
@@ -166,11 +167,11 @@ class ApiServiceTest extends TestCase
      * updateConsumer should throw an error if you send no data to update
      *
      * @return void
-     * @expectedException InvalidArgumentException
      * @access public
      */
-    public function testUpdateConsumerShouldThrowAnErrorIfEmptyData()
+    public function testUpdateConsumerShouldThrowAnErrorIfEmptyData(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->apiService->updateConsumer('myApiKey23', []);
     }
 
@@ -178,11 +179,11 @@ class ApiServiceTest extends TestCase
      * updateConsumer should throw an error if you send an api_key in the data
      *
      * @return void
-     * @expectedException InvalidArgumentException
      * @access public
      */
-    public function testUpdateConsumerShouldThrowAnErrorIfInvalidData()
+    public function testUpdateConsumerShouldThrowAnErrorIfInvalidData(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->apiService->updateConsumer('myApiKey23', ['api_key'  =>  'nyNewApiKey']);
     }
 
@@ -193,7 +194,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayingShouldIndicateAPrayer()
+    public function testPrayingShouldIndicateAPrayer(): void
     {
         $prayerId = '01-11';
         $apiKey = 'myApiKey23';
@@ -202,12 +203,12 @@ class ApiServiceTest extends TestCase
         $this->prayerService->expects($this->once())
                                 ->method('validate')
                                 ->with($prayingData)
-                                ->will($this->returnValue(true));
+                                ->willReturn(true);
 
         $this->prayerService->expects($this->once())
                                 ->method('praying')
                                 ->with($apiKey, $prayingData)
-                                ->will($this->returnValue(true));
+                                ->willReturn(true);
 
         $this->assertTrue($this->apiService->praying($apiKey, $prayerId));
     }
@@ -218,7 +219,7 @@ class ApiServiceTest extends TestCase
      * @return void
      * @access public
      */
-    public function testPrayerStatsAsConsumerShouldReturnValidStats()
+    public function testPrayerStatsAsConsumerShouldReturnValidStats(): void
     {
         $prayerId = '02-29';
         $apiKey = 'FunnyKeySee';
@@ -233,12 +234,12 @@ class ApiServiceTest extends TestCase
         $this->prayerService->expects($this->once())
                                 ->method('validate')
                                 ->with($prayingData)
-                                ->will($this->returnValue(true));
+                                ->willReturn(true);
 
         $this->prayerService->expects($this->once())
                                 ->method('prayerStats')
                                 ->with($apiKey, 'consumer', $prayingData)
-                                ->will($this->returnValue($expected));
+                                ->willReturn($expected);
 
         $actual = $this->apiService->prayerStats($apiKey, 'consumer', '02-29');
         $this->assertEquals($expected, $actual);
@@ -248,12 +249,12 @@ class ApiServiceTest extends TestCase
      * praying() should throw an error if the apiKey is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfApiKeyIsEmpty()
+    public function testPrayingShouldThrowErrorIfApiKeyIsEmpty(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
                                 ->method('validate');
         $this->apiService->praying('', '12-02');
@@ -263,16 +264,16 @@ class ApiServiceTest extends TestCase
      * praying() should throw an error if the prayerId is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfPrayerIdIsEmpty()
+    public function testPrayingShouldThrowErrorIfPrayerIdIsEmpty(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
                                 ->method('validate')
                                 ->with(['id'    =>  ''])
-                                ->will($this->returnValue(false));
+                                ->willReturn(false);
         $this->apiService->praying('myApiKey', '');
     }
 
@@ -280,16 +281,16 @@ class ApiServiceTest extends TestCase
      * praying() should throw an error if the prayerId is malformed
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayingShouldThrowErrorIfPrayerIdIsMalformed()
+    public function testPrayingShouldThrowErrorIfPrayerIdIsMalformed(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
                                 ->method('validate')
                                 ->with(['id'    =>  '2103-2'])
-                                ->will($this->returnValue(false));
+                                ->willReturn(false);
         $this->apiService->praying('myApiKey', '2103-2');
     }
 
@@ -297,12 +298,12 @@ class ApiServiceTest extends TestCase
      * prayerStats() should throw an error if the apiKey is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfApiKeyIsEmpty()
+    public function testPrayerStatsShouldThrowErrorIfApiKeyIsEmpty(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
                                 ->method('validate');
         $this->apiService->prayerStats('', 'client', '12-02');
@@ -312,12 +313,12 @@ class ApiServiceTest extends TestCase
      * prayerStats() should throw an error if the keyType is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsEmpty()
+    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsEmpty(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
                                 ->method('validate');
         $this->apiService->prayerStats('myspecialKEY', '', '12-02');
@@ -327,12 +328,12 @@ class ApiServiceTest extends TestCase
      * prayerStats() should throw an error if the keyType is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsWrong()
+    public function testPrayerStatsShouldThrowErrorIfKeyTypeIsWrong(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->never())
                                 ->method('validate');
         $this->apiService->prayerStats('myspecialKEY', 'guest', '12-02');
@@ -342,16 +343,16 @@ class ApiServiceTest extends TestCase
      * prayerStats() should throw an error if the prayerId is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsEmpty()
+    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsEmpty(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
                                 ->method('validate')
                                 ->with(['id'    =>  ''])
-                                ->will($this->returnValue(false));
+                                ->willReturn(false);
         $this->apiService->prayerStats('myApiKey', 'consumer', '');
     }
 
@@ -359,16 +360,16 @@ class ApiServiceTest extends TestCase
      * prayerStats() should throw an error if the prayerId is empty
      *
      * @return void
-     * @expectedException InvalidArgumentException
      *
      * @access public
      */
-    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsMalformed()
+    public function testPrayerStatsShouldThrowErrorIfPrayerIdIsMalformed(): void
     {
+        $this->expectException(\InvalidArgumentException::class);
         $this->prayerService->expects($this->once())
                                 ->method('validate')
                                 ->with(['id'    =>  '03-243'])
-                                ->will($this->returnValue(false));
+                                ->willReturn(false);
         $this->apiService->prayerStats('myApiKey', 'consumer', '03-243');
     }
 }

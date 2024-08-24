@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Year of Prayer Service.
  *
@@ -19,6 +20,7 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
+
 namespace YearOfPrayer\ApiService;
 
 use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
@@ -26,23 +28,15 @@ use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
 class PrayerService
 {
     /**
-     * The Http Service
-     *
-     * @var HttpServiceInterface
-     * @access private
-     */
-    private $httpService;
-
-    /**
      * Set the Http client to use
      *
      * @param  HttpServiceInterface     $service    The service for making Http Requests
      *
      * @access public
      */
-    public function setHttpService(HttpServiceInterface $service)
-    {
-        $this->httpService = $service;
+    public function __construct(
+        private HttpServiceInterface $httpService
+    ) {
     }
 
     /**
@@ -53,15 +47,15 @@ class PrayerService
      * @return boolean              Was it successful
      * @access public
      */
-    public function praying($apiKey, $data)
+    public function praying(string $apiKey, array $data): bool
     {
         $sendData = [
             'headers'   =>    [
                 'yop-api-key' =>  $apiKey
             ]
         ];
-        $response = $this->httpService->post('/prayers/' . $data['id'] . '/praying', $sendData);
-        return ($response['status'] === 'success');
+        $response = $this->httpService->post("/prayers/{$data['id']}/praying", $sendData);
+        return $response['status'] === 'success';
     }
 
     /**
@@ -69,11 +63,11 @@ class PrayerService
      *
      * @param  string   $authorizeKey   The API Key of the Consumer or the application id for the client.
      * @param  string   $keyType        The type of auth key sent (consumer|client).
-     * @param  string   $data           The data containing the prayerId
+     * @param  string[] $data           The data containing the prayerId
      * @return array                    An array of prayer stats
      * @access public
      */
-    public function prayerStats($authorizeKey, $keyType, $data)
+    public function prayerStats(string $authorizeKey, string $keyType, array $data): array
     {
         if ($keyType === 'client') {
             $sendData = [
@@ -88,7 +82,7 @@ class PrayerService
                 ]
             ];
         }
-        $response = $this->httpService->get('/prayers/' . $data['id'], $sendData);
+        $response = $this->httpService->get("/prayers/{$data['id']}", $sendData);
         return $response['success']['data'];
     }
 
@@ -99,7 +93,7 @@ class PrayerService
      * @return boolean          Is it valid
      * @access public
      */
-    public function validate($data)
+    public function validate(array $data): bool
     {
         $valid = true;
         $regex = '/^[0-9]{2}-[0-9]{2}$/';
@@ -124,9 +118,9 @@ class PrayerService
      * @return boolean          Is it valid?
      * @access private
      */
-    private function validMonth($month)
+    private function validMonth(int $month): bool
     {
-        return ($month <= 12);
+        return $month <= 12;
     }
 
     /**
@@ -137,7 +131,7 @@ class PrayerService
      * @return boolean          Is it valid?
      * @access private
      */
-    private function validDay($month, $day)
+    private function validDay(int $month, int $day): bool
     {
         $totalDays = 31;
         if (in_array($month, [4, 6, 9, 11])) {
@@ -145,6 +139,6 @@ class PrayerService
         } elseif ($month === 2) {
             $totalDays = 29;
         }
-        return ($day <= $totalDays);
+        return $day <= $totalDays;
     }
 }
