@@ -50,13 +50,12 @@ class PrayerServiceTest extends TestCase
      */
     public function setUp() : void
     {
-        $this->prayerService = new PrayerService();
         $this->httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
                                 ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
                                 ->getMock();
-        $this->prayerService->setHttpService($this->httpService);
+        $this->prayerService = new PrayerService($this->httpService);
     }
 
     /**

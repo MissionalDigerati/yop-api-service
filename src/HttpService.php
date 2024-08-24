@@ -29,14 +29,6 @@ use GuzzleHttp\Client;
 class HttpService implements HttpServiceInterface
 {
     /**
-     * The base URL for all requests
-     *
-     * @var string
-     * @access private
-     */
-    private $baseUrl = '';
-
-    /**
      * The Http client
      *
      * @var Client
@@ -48,10 +40,10 @@ class HttpService implements HttpServiceInterface
      *
      * @access public
      */
-    public function __construct($baseUrl = '')
-    {
+    public function __construct(
+        private $baseUrl = ''
+    ) {
         $this->httpClient = new Client();
-        $this->setBaseUrl($baseUrl);
     }
 
     /**

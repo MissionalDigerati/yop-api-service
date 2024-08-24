@@ -45,19 +45,15 @@ class ApiService implements ApiServiceInterface
     /**
      * Set up the class
      *
-     * @param HttpServiceInterface $httpService     The HTTP service
      * @param ConsumerService      $consumerService The consumer service
      * @param PrayerService        $prayerService   [The Prayer service
      */
     public function __construct(
-        HttpServiceInterface $httpService,
         ConsumerService $consumerService,
         PrayerService $prayerService
     ) {
         $this->consumerService = $consumerService;
         $this->prayerService = $prayerService;
-        $this->consumerService->setHttpService($httpService);
-        $this->prayerService->setHttpService($httpService);
     }
 
     /**

@@ -69,13 +69,12 @@ class ConsumerServiceTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->consumerService = new ConsumerService();
         $this->httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
                                 ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
                                 ->getMock();
-        $this->consumerService->setHttpService($this->httpService);
+        $this->consumerService = new ConsumerService($this->httpService);
     }
 
     /**

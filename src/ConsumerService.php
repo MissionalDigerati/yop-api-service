@@ -28,23 +28,15 @@ use YearOfPrayer\ApiService\Contracts\HttpServiceInterface;
 class ConsumerService
 {
     /**
-     * The Http Service
-     *
-     * @var HttpServiceInterface
-     * @access private
-     */
-    private $httpService;
-
-    /**
-     * Set the Http client to use
+     * Build the class
      *
      * @param  HttpServiceInterface     $service    The service for making Http Requests
      *
      * @access public
      */
-    public function setHttpService(HttpServiceInterface $service)
-    {
-        $this->httpService = $service;
+    public function __construct(
+        private HttpServiceInterface $httpService
+    ) {
     }
 
     /**

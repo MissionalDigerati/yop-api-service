@@ -75,16 +75,18 @@ class ApiServiceTest extends TestCase
      */
     public function setUp(): void
     {
-        $this->consumerService = $this->getMockBuilder('YearOfPrayer\ApiService\ConsumerService')
-                                ->getMock();
-        $this->prayerService = $this->getMockBuilder('YearOfPrayer\ApiService\PrayerService')
-                                                        ->getMock();
         $httpService = $this->getMockBuilder(
             'YearOfPrayer\ApiService\Contracts\HttpServiceInterface'
         )
-                                ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
-                                ->getMock();
-        $this->apiService = new ApiService($httpService, $this->consumerService, $this->prayerService);
+            ->onlyMethods(['post', 'get', 'put', 'setBaseUrl'])
+            ->getMock();
+        $this->consumerService = $this->getMockBuilder('YearOfPrayer\ApiService\ConsumerService')
+            ->setConstructorArgs([$httpService])
+            ->getMock();
+        $this->prayerService = $this->getMockBuilder('YearOfPrayer\ApiService\PrayerService')
+            ->setConstructorArgs([$httpService])
+            ->getMock();
+        $this->apiService = new ApiService($this->consumerService, $this->prayerService);
     }
 
     /**
